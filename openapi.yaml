@@ -1,0 +1,609 @@
+openapi: 3.0.0
+paths:
+  /offers:
+    get:
+      operationId: OfferController_findAll
+      parameters:
+        - name: subCategoryId
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: location
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OfferDto'
+  /offers/{id}:
+    get:
+      operationId: OfferController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferDto'
+  /offers/{id}/getLink:
+    get:
+      operationId: OfferController_getLink
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: userId
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+  /sub-categories:
+    get:
+      operationId: SubCategoryController_findAll
+      parameters: []
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubCategoryDto'
+  /sub-categories/{id}:
+    get:
+      operationId: SubCategoryController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubCategoryDto'
+info:
+  title: Employees
+  description: seriea application
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    AuthDto:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        hashedRt:
+          type: string
+      required:
+        - email
+        - password
+        - hashedRt
+    SignResponse:
+      type: object
+      properties:
+        token:
+          type: object
+        uid:
+          type: string
+        user:
+          type: string
+      required:
+        - token
+        - uid
+        - user
+    '':
+      type: object
+      properties: {}
+    RefreshReponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - accessToken
+        - refreshToken
+    CreateCategoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+      required:
+        - name
+        - imageUrl
+    CategoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+        id:
+          type: string
+        subCategory:
+          type: object
+      required:
+        - name
+        - imageUrl
+        - id
+        - subCategory
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+        subCategory:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubCategory'
+      required:
+        - id
+        - name
+        - imageUrl
+        - subCategory
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        saleAmount:
+          type: number
+        status:
+          type: string
+          enum:
+            - approved
+            - pending
+        date:
+          format: date-time
+          type: string
+        commission:
+          type: number
+        storeName:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+        - id
+        - userId
+        - saleAmount
+        - status
+        - date
+        - commission
+        - storeName
+        - user
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        emailVerified:
+          type: boolean
+        image:
+          type: string
+        rewardPoint:
+          type: number
+        hashedRt:
+          type: string
+        refferalLink:
+          type: string
+        affiliateKey:
+          type: string
+        walletAddress:
+          type: string
+        status:
+          type: string
+        provider:
+          type: string
+        links:
+          $ref: '#/components/schemas/Links'
+        transaction:
+          $ref: '#/components/schemas/Transaction'
+      required:
+        - id
+        - name
+        - email
+        - password
+        - emailVerified
+        - image
+        - rewardPoint
+        - hashedRt
+        - refferalLink
+        - affiliateKey
+        - walletAddress
+        - status
+        - provider
+        - links
+        - transaction
+    Links:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        offerId:
+          type: string
+        link:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        offer:
+          $ref: '#/components/schemas/Offer'
+      required:
+        - id
+        - userId
+        - offerId
+        - link
+        - user
+        - offer
+    Offer:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        profit:
+          type: number
+        baseReferalLink:
+          type: string
+        network:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        subCategory:
+          $ref: '#/components/schemas/SubCategory'
+        subCategoryId:
+          type: string
+        links:
+          $ref: '#/components/schemas/Links'
+      required:
+        - id
+        - title
+        - description
+        - imageUrl
+        - profit
+        - baseReferalLink
+        - network
+        - isActive
+        - createdAt
+        - updatedAt
+        - subCategory
+        - subCategoryId
+        - links
+    SubCategory:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+        category:
+          $ref: '#/components/schemas/Category'
+        categoryId:
+          type: string
+        offer:
+          $ref: '#/components/schemas/Offer'
+      required:
+        - id
+        - name
+        - imageUrl
+        - category
+        - categoryId
+        - offer
+    UpdateCategoryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+        subCategory:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubCategory'
+    DeleteDto:
+      type: object
+      properties:
+        raw:
+          type: array
+          items:
+            type: string
+        affected:
+          type: number
+      required:
+        - raw
+        - affected
+    CreateOfferDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        profit:
+          type: number
+        baseReferalLink:
+          type: string
+        network:
+          type: string
+        isActive:
+          type: boolean
+        subCategoryId:
+          type: string
+      required:
+        - title
+        - description
+        - imageUrl
+        - profit
+        - baseReferalLink
+        - network
+        - subCategoryId
+    OfferDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        profit:
+          type: number
+        baseReferalLink:
+          type: string
+        network:
+          type: string
+        isActive:
+          type: boolean
+        subCategoryId:
+          type: string
+        id:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - title
+        - description
+        - imageUrl
+        - profit
+        - baseReferalLink
+        - network
+        - subCategoryId
+        - id
+        - createdAt
+        - updatedAt
+    UpdateOfferDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        profit:
+          type: number
+        baseReferalLink:
+          type: string
+        network:
+          type: string
+        isActive:
+          type: boolean
+        subCategoryId:
+          type: string
+        id:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    GetOffersDto:
+      type: object
+      properties:
+        start_date:
+          type: string
+        end_date:
+          type: string
+      required:
+        - start_date
+        - end_date
+    GetTransactionsDto:
+      type: object
+      properties:
+        start_date:
+          type: string
+        end_date:
+          type: string
+        sub_id:
+          type: number
+        page:
+          type: number
+        status:
+          type: string
+          enum:
+            - approved
+            - pending
+      required:
+        - start_date
+        - end_date
+        - sub_id
+    GetLinkDto:
+      type: object
+      properties:
+        url:
+          type: string
+        sub_id:
+          type: string
+      required:
+        - url
+        - sub_id
+    CreateLinksDto:
+      type: object
+      properties:
+        userId:
+          type: string
+        offerId:
+          type: string
+        link:
+          type: string
+      required:
+        - userId
+        - offerId
+        - link
+    CreateSubCategoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+        categoryId:
+          type: string
+      required:
+        - name
+        - imageUrl
+        - categoryId
+    SubCategoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+        categoryId:
+          type: string
+        id:
+          type: string
+      required:
+        - name
+        - imageUrl
+        - categoryId
+        - id
+    UpdateSubCategoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+        categoryId:
+          type: string
+        id:
+          type: string
+    CreateTransactionDto:
+      type: object
+      properties:
+        date:
+          type: string
+        commission:
+          type: number
+        saleAmount:
+          type: number
+        storeName:
+          type: string
+        status:
+          enum:
+            - approved
+            - pending
+          type: string
+      required:
+        - date
+        - commission
+        - saleAmount
+        - storeName
+        - status
+    UpdateTransactionDto:
+      type: object
+      properties:
+        date:
+          type: string
+        commission:
+          type: number
+        saleAmount:
+          type: number
+        storeName:
+          type: string
+        status:
+          type: string
+          enum:
+            - approved
+            - pending
